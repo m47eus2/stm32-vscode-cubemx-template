@@ -1,0 +1,1 @@
+# stm32-vscode-cubemx-template
