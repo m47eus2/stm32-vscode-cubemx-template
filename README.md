@@ -15,29 +15,68 @@ Template for programming, flashing and debugging STM32 Microcontrollers with Cub
 
 
 ## Required tools 🔧
-STM32CubeMX
+### STM32CubeMX
+**Arch**
 
-VSCode with extensions
+Install as usual
+
+**Fedora**
+
+If using Fedora 43 it is possible you may need to replace CubeMX's JRE. 
+
+During installation process make note of install location. After installing CubeMX run
+```
+sudo dnf install java-latest-openjdk
+cd <CubeMX directory>
+mv jre jre.backup
+ln /usr/lib/jvm/java-latest-openjdk jre
+```
+
+### VSCode with extensions
 - C/C++
 - Cortex-Debug
 - clangd
 
-GCC-ARM compiler and debugger
+### GCC-ARM compiler and debugger
+
+**Arch**
 ```
 sudo pacman -S arm-none-eabi-gcc arm-none-eabi-binutils arm-none-eabi-newlib arm-none-eabi-gdb
 ```
 
+**Fedora**
+```
+sudo dnf install arm-none-eabi-gcc-cs arm-none-eabi-binutils-cs arm-none-eabi-newlib gdb
+sudo ln -s /usr/bin/gdb /usr/bin/arm-none-eabi-gdb
+```
+###
+
 OpenOCD Flasher
+
+**Arch**
 ```
 sudo pacman -S openocd
 ```
 
-Compiledb
+**Fedora**
+```
+sudo dnf install openocd
+```
+
+### Compiledb
+
+**Arch**
 ```
 sudo pacman -S python-pipx
 pipx ensurepath
 source ~/.bashrc
 pipx install compiledb
+```
+
+**Fedora**
+```
+sudo dnf install python3-pip
+pip install compiledb
 ```
 
 
