@@ -88,7 +88,7 @@ pip install compiledb
 
 3. Open project in VSCode
 
-4. Check if projest builds
+4. Check if project builds
 ```
 make
 ```
