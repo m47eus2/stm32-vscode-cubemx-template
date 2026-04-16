@@ -10,6 +10,7 @@ Template for programming, flashing and debugging STM32 Microcontrollers with Cub
 - Clangd -> Language server
 - Compiledb -> Generates compile_commands.json for clangd
 - OpenOCD -> Flasher
+- STM32CubeProgrammerCLI -> Flasher (for new STM32 families)
 - Cortex-Debug -> Debugging in VSCode
 - ARM-GCC -> Compiler and debugger
 
@@ -18,7 +19,7 @@ Template for programming, flashing and debugging STM32 Microcontrollers with Cub
 ### STM32CubeMX
 **Arch**
 
-Install as usual
+yay -S stm32cubemx
 
 **Fedora**
 
@@ -31,6 +32,9 @@ cd <CubeMX directory>
 mv jre jre.backup
 ln /usr/lib/jvm/java-latest-openjdk jre
 ```
+
+**Ubuntu**
+Install directly from ST website.
 
 ### VSCode with extensions
 - C/C++
@@ -49,9 +53,14 @@ sudo pacman -S arm-none-eabi-gcc arm-none-eabi-binutils arm-none-eabi-newlib arm
 sudo dnf install arm-none-eabi-gcc-cs arm-none-eabi-binutils-cs arm-none-eabi-newlib gdb
 sudo ln -s /usr/bin/gdb /usr/bin/arm-none-eabi-gdb
 ```
-###
 
-OpenOCD Flasher
+**Ubuntu**
+
+```
+sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi gdb-multiarch
+```
+
+### OpenOCD Flasher
 
 **Arch**
 ```
@@ -62,6 +71,22 @@ sudo pacman -S openocd
 ```
 sudo dnf install openocd
 ```
+
+### STM32CubeProgrammer (for new STM32 families)
+
+**Ubuntu**
+
+Install directly from ST website
+
+Add to PATH .bashrc
+```
+export PATH=$PATH:$STM32_PRG_PATH
+```
+Add privilages to use USB
+```
+sudo cp ~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/Drivers/rules/*.rules /etc/udev/rules.d/
+```
+
 
 ### Compiledb
 
@@ -77,6 +102,15 @@ pipx install compiledb
 ```
 sudo dnf install python3-pip
 pip install compiledb
+```
+
+**Ubuntu**
+
+```
+sudo apt install pipx
+pipx ensurepath
+source ~/.bashrc
+pipx install compiledb
 ```
 
 
@@ -99,12 +133,22 @@ compiledb make
 ```
 
 6. Add flashing rule in Makefile before EOF marker for flashing MCU with OpenOCD. Change target to your MCU
+
+**OpenOCD**
 ```
 flash: all
 	openocd -f interface/stlink.cfg -f target/stm32l4x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 ```
 
-7. To configure debuging from VSCode create launch.json file - Debugging tab, Create a launch.json file, Cortex Debug. Change device, svdFile and configFiles to your MCU. SVD file can be download from ST MCU website in CAD Resources tab. 
+**STM32CubeProgrammer (for new STM32 families)**
+```
+flash: all
+	STM32_Programmer_CLI -c port=SWD -w $(BUILD_DIR)/$(TARGET).elf -v -rst
+```
+
+7. To configure debuging from VSCode create launch.json file - Debugging tab, Create a launch.json file, Cortex Debug. Change device, svdFile and configFiles to your MCU. SVD file can be download from ST MCU website in CAD Resources tab.
+
+**OpenOCD**
 ```
 {
     // Use IntelliSense to learn about possible attributes.
@@ -129,6 +173,10 @@ flash: all
         }
     ]
 }
+```
+
+**STM32CubeProgrammer (for new STM32 families)**
+```
 ```
 
 ## Building and flashing project 🔨
