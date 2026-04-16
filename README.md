@@ -34,6 +34,7 @@ ln /usr/lib/jvm/java-latest-openjdk jre
 ```
 
 **Ubuntu**
+
 Install directly from ST website.
 
 ### VSCode with extensions
