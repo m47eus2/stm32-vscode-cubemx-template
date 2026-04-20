@@ -133,6 +133,16 @@ make
 compiledb make
 ```
 
+***Ubuntu***
+
+Link gcc-arm libraries directory in .clangd
+```
+CompileFlags:
+  Add:
+    - --target=arm-none-eabi
+    - -I/usr/include/newlib
+```
+
 6. Add flashing rule in Makefile before EOF marker for flashing MCU with OpenOCD. Change target to your MCU
 
 **OpenOCD**
