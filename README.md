@@ -15,8 +15,10 @@ Template for programming, flashing and debugging STM32 Microcontrollers with Cub
 - ARM-GCC -> Compiler and debugger
 
 
-## Required tools 🔧
-### STM32CubeMX
+# Required tools 🔧
+
+## STM32CubeMX
+
 **Arch**
 
 yay -S stm32cubemx
@@ -37,12 +39,12 @@ ln /usr/lib/jvm/java-latest-openjdk jre
 
 Install directly from ST website.
 
-### VSCode with extensions
+## VSCode with extensions
 - C/C++
 - Cortex-Debug
 - clangd
 
-### GCC-ARM compiler and debugger
+## GCC-ARM compiler and debugger
 
 **Arch**
 ```
@@ -58,10 +60,10 @@ sudo ln -s /usr/bin/gdb /usr/bin/arm-none-eabi-gdb
 **Ubuntu**
 
 ```
-sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi gdb-multiarch
+sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi gdb-multiarch
 ```
 
-### OpenOCD Flasher
+## OpenOCD Flasher
 
 **Arch**
 ```
@@ -73,7 +75,27 @@ sudo pacman -S openocd
 sudo dnf install openocd
 ```
 
-### STM32CubeProgrammer (for new STM32 families)
+## OpenOCD Flasher ST Fork (for new STM32 MCUs)
+
+OpenOCD is fantastic software, but it does not support some of the newer STM32 MCUs. For this reason ST has created OpenOCD fork that supports all STM32 MCUs. The downsite of this solution is that you have to compile it yourself which is not that difficult. Alternatively you can use STM32CubeProgrammer CLI instead.
+
+You can find OpenOCD ST fork on [GitHub](https://github.com/STMicroelectronics/OpenOCD)
+
+Addiitonal building instructions can be found on [Official OpenOCD GitHub repo](https://github.com/openocd-org/openocd/)
+
+**Ubuntu**
+```
+git clone https://github.com/STMicroelectronics/OpenOCD
+cd OpenOCD/
+./bootstrap
+./configure --prefix=/opt/openocd-st CFLAGS="-Wno-error=calloc-transposed-args -Wno-error=discarded-qualifiers"
+make
+sudo make install
+```
+
+## STM32CubeProgrammer (when you don't want to use OpenOCD)
+
+STM32CubeProgrammer is a decent alternative to the OpenOCD ST Fork. The downsite of this solution is that it is more difficult to use with Cortex-Debugg for debugging (I honestly don't know how to set it up).
 
 **Ubuntu**
 
@@ -89,7 +111,7 @@ sudo cp ~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/Drivers/rules/*.rules
 ```
 
 
-### Compiledb
+## Compiledb
 
 **Arch**
 ```
@@ -115,25 +137,25 @@ pipx install compiledb
 ```
 
 
-## Project setup 📖
+# Project setup 📖
 
-1. Get required tools
+### 1. Get required tools
 
-2. Generate project with STM32CubeMX with Toolchain set to Makefile
+### 2. Generate project with STM32CubeMX with Toolchain set to Makefile
 
-3. Open project in VSCode
+### 3. Open project in VSCode
 
-4. Check if project builds
+### 4. Check if project builds
 ```
 make
 ```
 
-5. Generate compile_commands.json for clangd using compiledb with
+### 5. Generate compile_commands.json for clangd using compiledb with
 ```
 compiledb make
 ```
 
-***Ubuntu***
+**Ubuntu**
 
 Link gcc-arm libraries directory in .clangd
 ```
@@ -143,7 +165,7 @@ CompileFlags:
     - -I/usr/include/newlib
 ```
 
-6. Add flashing rule in Makefile before EOF marker for flashing MCU with OpenOCD. Change target to your MCU
+### 6. Add flashing rule in Makefile before EOF marker for flashing MCU with OpenOCD. Change target to your MCU
 
 **OpenOCD**
 ```
@@ -151,13 +173,19 @@ flash: all
 	openocd -f interface/stlink.cfg -f target/stm32l4x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 ```
 
-**STM32CubeProgrammer (for new STM32 families)**
+**OpenOCD ST Fork**
+```
+flash: all
+	/opt/openocd-st/bin/openocd -f interface/stlink.cfg -f target/stm32l4x.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+```
+
+**STM32CubeProgrammer**
 ```
 flash: all
 	STM32_Programmer_CLI -c port=SWD -w $(BUILD_DIR)/$(TARGET).elf -v -rst
 ```
 
-7. To configure debuging from VSCode create launch.json file - Debugging tab, Create a launch.json file, Cortex Debug. Change device, svdFile and configFiles to your MCU. SVD file can be download from ST MCU website in CAD Resources tab.
+### 7. To configure debuging from VSCode create launch.json file - Debugging tab, Create a launch.json file, Cortex Debug. Change device, svdFile and configFiles to your MCU. SVD file can be download from ST MCU website in CAD Resources tab.
 
 **OpenOCD**
 ```
@@ -186,11 +214,7 @@ flash: all
 }
 ```
 
-**STM32CubeProgrammer (for new STM32 families)**
-```
-```
-
-## Building and flashing project 🔨
+# Building and flashing project 🔨
 
 Compiling project
 ```
