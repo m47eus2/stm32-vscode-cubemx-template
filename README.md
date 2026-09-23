@@ -85,6 +85,7 @@ Addiitonal building instructions can be found on [Official OpenOCD GitHub repo](
 
 **Ubuntu**
 ```
+sudo apt install texinfo libjim-dev libtool libusb-1.0-0-dev
 git clone https://github.com/STMicroelectronics/OpenOCD
 cd OpenOCD/
 ./bootstrap
